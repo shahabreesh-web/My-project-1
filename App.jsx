@@ -45,7 +45,47 @@ import {
 } from "lucide-react";
 
 import { db, auth, storage } from "./firebase";
+import {
+  getFunctions,
+  httpsCallable
+} from "firebase/functions";
+const functions =
+  getFunctions();
+const checkout = async () => {
 
+  try {
+
+    setSubmitting(true);
+
+    const createOrder =
+      httpsCallable(
+        functions,
+        "createOrder"
+      );
+
+    const res =
+      await createOrder({
+        cart
+      });
+
+    console.log(res.data);
+
+    setCart([]);
+
+    showToast(
+      "✅ Secure Order Complete"
+    );
+
+  } catch (err) {
+
+    setError(err.message);
+
+  } finally {
+
+    setSubmitting(false);
+
+  }
+};
 const googleProvider = new GoogleAuthProvider();
 const githubProvider = new GithubAuthProvider();
 
